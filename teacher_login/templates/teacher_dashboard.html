@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f6fa;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .header-left p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .logout-btn {
+            padding: 10px 25px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .logout-btn:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .stat-icon {
+            font-size: 40px;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+        }
+
+        .stat-icon.students {
+            background: #e3f2fd;
+        }
+
+        .stat-icon.present {
+            background: #d4edda;
+        }
+
+        .stat-icon.absent {
+            background: #f8d7da;
+        }
+
+        .stat-icon.compliant {
+            background: #d1ecf1;
+        }
+
+        .stat-icon.non-compliant {
+            background: #fff3cd;
+        }
+
+        .stat-info h3 {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .stat-info .number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .card h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checks-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .checks-table th {
+            background: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .checks-table td {
+            padding: 12px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .checks-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge-compliant {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-non-compliant {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .item-indicator {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 20px;
+            font-size: 12px;
+        }
+
+        .item-present {
+            background: #28a745;
+            color: white;
+        }
+
+        .item-absent {
+            background: #dc3545;
+            color: white;
+        }
+
+        .student-list {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .student-item {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .student-item:hover {
+            background: #f8f9fa;
+            padding-left: 20px;
+        }
+
+        .student-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .view-btn {
+            padding: 6px 15px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .view-btn:hover {
+            background: #5568d3;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .image-thumbnail {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            object-fit: cover;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .image-thumbnail:hover {
+            transform: scale(1.1);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close-btn {
+            font-size: 30px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .history-item {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .history-item .date {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .history-items-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <h1>👨‍🏫 Teacher Dashboard</h1>
+                <p>{{ current_date }}</p>
+            </div>
+            <a href="/teacher/logout?session={{ session }}" class="logout-btn">Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Statistics Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon students">👥</div>
+                <div class="stat-info">
+                    <h3>Total Students</h3>
+                    <div class="number">{{ stats.total_students }}</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon present">✓</div>
+                <div class="stat-info">
+                    <h3>Present Today</h3>
+                    <div class="number">{{ stats.present_today }}</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon absent">✗</div>
+                <div class="stat-info">
+                    <h3>Absent Today</h3>
+                    <div class="number">{{ stats.absent_today }}</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon compliant">👔</div>
+                <div class="stat-info">
+                    <h3>Uniform Compliant</h3>
+                    <div class="number">{{ stats.compliant }}</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon non-compliant">⚠️</div>
+                <div class="stat-info">
+                    <h3>Non-Compliant</h3>
+                    <div class="number">{{ stats.non_compliant }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Today's Uniform Checks -->
+            <div class="card">
+                <h2>📋 Today's Uniform Checks</h2>
+                
+                {% if checks %}
+                <div style="overflow-x: auto;">
+                    <table class="checks-table">
+                        <thead>
+                            <tr>
+                                <th>Photo</th>
+                                <th>Student</th>
+                                <th>Time</th>
+                                <th>Blazer</th>
+                                <th>Tie</th>
+                                <th>Shirt</th>
+                                <th>ID</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for check in checks %}
+                            <tr>
+                                <td>
+                                    <img src="/{{ check.image_path }}" 
+                                         class="image-thumbnail" 
+                                         onclick="showImage('/{{ check.image_path }}')"
+                                         alt="Student photo">
+                                </td>
+                                <td>{{ check.student_name }}</td>
+                                <td>{{ check.check_time }}</td>
+                                <td>
+                                    <span class="item-indicator {% if check.black_blazer_or_suit %}item-present{% else %}item-absent{% endif %}">
+                                        {% if check.black_blazer_or_suit %}✓{% else %}✗{% endif %}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="item-indicator {% if check.tie %}item-present{% else %}item-absent{% endif %}">
+                                        {% if check.tie %}✓{% else %}✗{% endif %}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="item-indicator {% if check.white_shirt %}item-present{% else %}item-absent{% endif %}">
+                                        {% if check.white_shirt %}✓{% else %}✗{% endif %}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="item-indicator {% if check.id_card %}item-present{% else %}item-absent{% endif %}">
+                                        {% if check.id_card %}✓{% else %}✗{% endif %}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="status-badge {% if check.overall_compliance %}badge-compliant{% else %}badge-non-compliant{% endif %}">
+                                        {% if check.overall_compliance %}Compliant{% else %}Non-Compliant{% endif %}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="no-data">
+                    <p>No uniform checks recorded today</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- All Students List -->
+            <div class="card">
+                <h2>👥 All Students</h2>
+                <div class="student-list">
+                    {% for student in students %}
+                    <div class="student-item">
+                        <div>
+                            <div class="student-name">{{ student.name }}</div>
+                            <div style="font-size: 12px; color: #999;">ID: {{ student.id }}</div>
+                        </div>
+                        <button class="view-btn" onclick="viewStudentHistory({{ student.id }}, '{{ student.name }}')">
+                            View History
+                        </button>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student History Modal -->
+    <div id="historyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalStudentName">Student History</h2>
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="historyContent"></div>
+        </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="modal" onclick="closeImageModal()">
+        <div class="modal-content" style="max-width: 600px; padding: 10px;">
+            <img id="modalImage" style="width: 100%; border-radius: 10px;" alt="Full size image">
+        </div>
+    </div>
+
+    <script>
+        const session = "{{ session }}";
+
+        function viewStudentHistory(studentId, studentName) {
+            document.getElementById('modalStudentName').textContent = studentName + "'s History";
+            document.getElementById('historyContent').innerHTML = '<p style="text-align: center; padding: 20px;">Loading...</p>';
+            document.getElementById('historyModal').classList.add('show');
+
+            fetch(`/teacher/student/${studentId}?session=${session}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.history.length > 0) {
+                        let html = '';
+                        data.history.forEach(check => {
+                            const items = [
+                                { name: 'Blazer', value: check.black_blazer_or_suit },
+                                { name: 'Tie', value: check.tie },
+                                { name: 'Shirt', value: check.white_shirt },
+                                { name: 'ID Card', value: check.id_card }
+                            ];
+
+                            html += `
+                                <div class="history-item">
+                                    <div class="date">${check.check_time}</div>
+                                    <div style="margin: 10px 0;">
+                                        <span class="status-badge ${check.overall_compliance ? 'badge-compliant' : 'badge-non-compliant'}">
+                                            ${check.overall_compliance ? 'Compliant' : 'Non-Compliant'}
+                                        </span>
+                                    </div>
+                                    <div class="history-items-grid">
+                                        ${items.map(item => `
+                                            <div style="text-align: center;">
+                                                <span class="item-indicator ${item.value ? 'item-present' : 'item-absent'}">
+                                                    ${item.value ? '✓' : '✗'}
+                                                </span>
+                                                <div style="font-size: 12px; margin-top: 5px; color: #666;">${item.name}</div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                    <img src="/${check.image_path}" 
+                                         style="width: 100%; margin-top: 15px; border-radius: 8px; cursor: pointer;" 
+                                         onclick="showImage('/${check.image_path}')"
+                                         alt="Uniform check photo">
+                                </div>
+                            `;
+                        });
+                        document.getElementById('historyContent').innerHTML = html;
+                    } else {
+                        document.getElementById('historyContent').innerHTML = '<div class="no-data">No history found</div>';
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('historyContent').innerHTML = '<div class="no-data">Error loading history</div>';
+                });
+        }
+
+        function closeModal() {
+            document.getElementById('historyModal').classList.remove('show');
+        }
+
+        function showImage(imagePath) {
+            event.stopPropagation();
+            document.getElementById('modalImage').src = imagePath;
+            document.getElementById('imageModal').classList.add('show');
+        }
+
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('show');
+        }
+
+        // Close modal on outside click
+        document.getElementById('historyModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

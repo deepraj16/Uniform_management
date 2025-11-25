@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Failed</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .error-container {
+            background: white;
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .error-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .error-container h1 {
+            color: #dc3545;
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .error-container p {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .error-details {
+            background: #f8d7da;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #dc3545;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .error-details strong {
+            color: #721c24;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .error-details ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .error-details li {
+            color: #721c24;
+            padding: 5px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .error-details li::before {
+            content: "•";
+            color: #dc3545;
+            font-size: 20px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 15px 35px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #dee2e6;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+
+        .hint-box {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #ffc107;
+            margin-top: 20px;
+        }
+
+        .hint-box strong {
+            color: #856404;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .hint-box p {
+            color: #856404;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-icon">❌</div>
+        <h1>Login Failed!</h1>
+        <p>Invalid username or password. Please check your credentials and try again.</p>
+
+        <div class="error-details">
+            <strong>Possible reasons:</strong>
+            <ul>
+                <li>Incorrect username</li>
+                <li>Incorrect password</li>
+                <li>Extra spaces in input</li>
+                <li>Caps Lock is ON</li>
+            </ul>
+        </div>
+
+        <div class="btn-group">
+            <a href="/teacher" class="btn btn-primary">Try Again</a>
+            <a href="/" class="btn btn-secondary">Student Login</a>
+        </div>
+
+        <div class="hint-box">
+            <strong>💡 Teacher Credentials:</strong>
+            <p>Username: <strong>teach26</strong></p>
+            <p>Password: <strong>teach@123</strong></p>
+        </div>
+    </div>
+</body>
+</html>
