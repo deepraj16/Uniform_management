@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Student Details{% endblock %}
+
+{% block content %}
+<h2 style="color: #667eea; margin-bottom: 30px;">👨‍🎓 Student Details</h2>
+
+{% if student %}
+<div class="card">
+    <h3 style="margin-bottom: 20px;">Student Information</h3>
+    <p><strong>Name:</strong> {{ student.name }}</p>
+    <p><strong>Roll Number:</strong> {{ student.roll_number }}</p>
+    <p><strong>Class:</strong> {{ student.class }}</p>
+</div>
+
+<div class="card">
+    <h3 style="margin-bottom: 20px;">Academic Performance</h3>
+    
+    {% if grades %}
+    <table>
+        <thead>
+            <tr>
+                <th>Subject</th>
+                <th>Marks</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for g in grades %}
+            <tr>
+                <td>{{ g.subject }}</td>
+                <td>{{ g.marks }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <div style="margin-top: 30px; padding: 20px; background: white; border-radius: 8px;">
+        <h4 style="margin-bottom: 15px;">Summary</h4>
+        <p><strong>Total Marks:</strong> {{ total }}</p>
+        <p><strong>Average:</strong> {{ average }}%</p>
+        <p><strong>Grade:</strong> <span class="grade grade-{{ grade }}">{{ grade }}</span></p>
+    </div>
+    {% else %}
+    <div class="alert">
+        No grades recorded for this student yet.
+    </div>
+    {% endif %}
+</div>
+
+<a href="/view-reports" class="btn">← Back to Reports</a>
+{% else %}
+<div class="alert">
+    Student not found!
+</div>
+<a href="/view-reports" class="btn">← Back to Reports</a>
+{% endif %}
+{% endblock %}

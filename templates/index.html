@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Student Grade Management{% endblock %}
+
+{% block content %}
+<div style="text-align: center; padding: 40px 0;">
+    <h2 style="color: #667eea; margin-bottom: 30px;">Welcome to Student Grade Management System</h2>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-top: 40px;">
+        <div class="card" style="text-align: center;">
+            <div style="font-size: 3em; margin-bottom: 15px;">👨‍🎓</div>
+            <h3 style="margin-bottom: 15px;">Add Student</h3>
+            <p style="color: #666; margin-bottom: 20px;">Register new student details</p>
+            <a href="/add-student" class="btn">Add Student</a>
+        </div>
+        
+        <div class="card" style="text-align: center;">
+            <div style="font-size: 3em; margin-bottom: 15px;">📝</div>
+            <h3 style="margin-bottom: 15px;">Add Grades</h3>
+            <p style="color: #666; margin-bottom: 20px;">Record subject marks for students</p>
+            <a href="/add-grades" class="btn">Add Grades</a>
+        </div>
+        
+        <div class="card" style="text-align: center;">
+            <div style="font-size: 3em; margin-bottom: 15px;">📊</div>
+            <h3 style="margin-bottom: 15px;">View Reports</h3>
+            <p style="color: #666; margin-bottom: 20px;">View all student reports and grades</p>
+            <a href="/view-reports" class="btn">View Reports</a>
+        </div>
+    </div>
+    
+    <div class="card" style="margin-top: 50px; text-align: left;">
+        <h3 style="margin-bottom: 15px;">📌 Features</h3>
+        <ul style="list-style: none; padding-left: 0;">
+            <li style="padding: 10px 0; border-bottom: 1px solid #dee2e6;">✅ Add and manage student records</li>
+            <li style="padding: 10px 0; border-bottom: 1px solid #dee2e6;">✅ Record subject-wise marks</li>
+            <li style="padding: 10px 0; border-bottom: 1px solid #dee2e6;">✅ Automatic calculation of total and average</li>
+            <li style="padding: 10px 0; border-bottom: 1px solid #dee2e6;">✅ Automatic grade assignment</li>
+            <li style="padding: 10px 0;">✅ View detailed student reports</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
