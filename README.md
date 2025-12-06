@@ -10,10 +10,7 @@
 2. [Features](#features)
 3. [Tech stack](#tech-stack)
 4. [Prerequisites](#prerequisites)
-5. [Installation](#installation)
-6. [Configuration](#configuration)
-7. [Database schema (example)](#database-schema-example)
-8. [Running the app](#running-the-app)
+5. [Usage / UI flow](#installation)
 ---
 
 ## Project overview
@@ -50,74 +47,6 @@ This repository contains a Uniform Management System (UMS) that helps school/col
 * MySQL or PostgreSQL server (or SQLite for quick testing)
 * (Optional) Docker & Docker Compose
 
-## Installation
-
-1. Clone the repo:
-
-```bash
-git clone <your-repo-url>
-cd uniform-management-system
-```
-
-2. Create a venv and install deps:
-
-```bash
-python -m venv venv
-source venv/bin/activate   # or venv\Scripts\activate on Windows
-pip install -r requirements.txt
-```
-
-3. Create `.env` (see Configuration) and set DB credentials.
-
-
-FLASK_ENV=development
-SECRET_KEY=your-secret-key
-DATABASE_URL=mysql+pymysql://user:pass@localhost/uniform_db
-PORT=5000
-```
-
-Or set `DATABASE_URL` for Postgres:`postgresql://user:pass@host/dbname`.
-
-## Database schema (example)
-
-Below are suggested tables and fields. Adjust to your app.
-
-```sql
--- students
-CREATE TABLE students (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  roll_no VARCHAR(50) NOT NULL,
-  name VARCHAR(150) NOT NULL,
-  class VARCHAR(50),
-  section VARCHAR(10),
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- uniform_items (customizable list)
-CREATE TABLE uniform_items (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  key_name VARCHAR(50) NOT NULL, -- e.g. blazer, white_shirt, tie
-  display_name VARCHAR(100) NOT NULL,
-  required BOOLEAN DEFAULT TRUE
-);
-
--- verifications
-CREATE TABLE verifications (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  student_id INT NOT NULL,
-  inspector VARCHAR(150),
-  verified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  blazer BOOLEAN,    -- example items
-  white_shirt BOOLEAN,
-  tie BOOLEAN,
-  belt BOOLEAN,
-  id_card BOOLEAN,
-  shoes BOOLEAN,
-  notes TEXT,
-  FOREIGN KEY (student_id) REFERENCES students(id)
-);
-```
-
 
 ## Usage / UI flow
 
@@ -140,9 +69,3 @@ GET  /api/reports/daily?date=...-> export CSV report
 
 Adjust routes to your implementation.
 
-
-## Troubleshooting
-
-* DB connection errors: check `DATABASE_URL` and network access.
-* Missing migrations: run `python manage.py migrate` or `flask db upgrade`.
-* Timezone issues: ensure DB and app share expected timezone or store UTC.
