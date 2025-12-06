@@ -14,14 +14,6 @@
 6. [Configuration](#configuration)
 7. [Database schema (example)](#database-schema-example)
 8. [Running the app](#running-the-app)
-9. [Usage / UI flow](#usage--ui-flow)
-10. [API endpoints](#api-endpoints)
-11. [Testing](#testing)
-12. [Deployment](#deployment)
-13. [Troubleshooting](#troubleshooting)
-14. [Contributing](#contributing)
-15. [License](#license)
-
 ---
 
 ## Project overview
@@ -126,26 +118,6 @@ CREATE TABLE verifications (
 );
 ```
 
-## Running the app
-
-### Local (without Docker)
-
-```bash
-# activate venv
-export FLASK_APP=app.py
-export FLASK_ENV=development
-flask run --port 5000
-```
-
-Visit `http://localhost:5000`.
-
-### Using Docker
-
-Provide a `Dockerfile` and `docker-compose.yml` that builds the app and links to a database container. Example quick commands:
-
-```bash
-docker compose up --build
-```
 
 ## Usage / UI flow
 
@@ -168,22 +140,6 @@ GET  /api/reports/daily?date=...-> export CSV report
 
 Adjust routes to your implementation.
 
-## Testing
-
-* Unit tests for core logic (attendance rules, imports).
-* Integration tests for API endpoints (use pytest + requests or Django test client).
-
-Example:
-
-```bash
-pytest tests/
-```
-
-## Deployment
-
-* Use Docker + managed database for production.
-* Ensure `SECRET_KEY` and DB credentials are set via env vars.
-* Configure HTTPS and a reverse proxy (nginx) for production.
 
 ## Troubleshooting
 
