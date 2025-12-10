@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian Stock Market Dashboard</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid white;
+            padding: 8px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .control-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .control-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .control-group select,
+        .control-group input {
+            padding: 10px;
+            border: 2px solid #e1e8ed;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .control-group select:focus,
+        .control-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .update-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .update-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .metric-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .metric-header {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .metric-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .metric-change {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .metric-change.positive {
+            color: #10b981;
+        }
+
+        .metric-change.negative {
+            color: #ef4444;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #fee;
+            color: #c33;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .info-banner {
+            background: #e3f2fd;
+            color: #1565c0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #1976d2;
+        }
+
+        .info-banner strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div>
+                <h1>🇮🇳 Indian Stock Market Dashboard</h1>
+                <p>Real-time data for NSE, BSE & Global Markets</p>
+            </div>
+            <div class="user-info">
+                <span id="username"></span>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="info-banner">
+            <strong>Important Note:</strong>
+        
+        </div>
+
+        <div class="controls">
+            <div class="control-row">
+                <div class="control-group">
+                    <label>Select Stocks (max 3)</label>
+                    <select id="stockSelect" multiple size="5">
+                        <option value="RELIANCE.NS">Reliance Industries</option>
+                        <option value="TCS.NS" selected>TCS</option>
+                        <option value="HDFCBANK.NS">HDFC Bank</option>
+                        <option value="INFY.NS">Infosys</option>
+                        <option value="ICICIBANK.NS">ICICI Bank</option>
+                        <option value="HINDUNILVR.NS">Hindustan Unilever</option>
+                        <option value="ITC.NS">ITC</option>
+                        <option value="SBIN.NS">SBI</option>
+                        <option value="BHARTIARTL.NS">Bharti Airtel</option>
+                        <option value="KOTAKBANK.NS">Kotak Bank</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>Time Period</label>
+                    <select id="periodSelect">
+                        <option value="1d">1 Day</option>
+                        <option value="5d">5 Days</option>
+                        <option value="1mo" selected>1 Month</option>
+                        <option value="3mo">3 Months</option>
+                        <option value="6mo">6 Months</option>
+                        <option value="1y">1 Year</option>
+                        <option value="2y">2 Years</option>
+                        <option value="5y">5 Years</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>Interval</label>
+                    <select id="intervalSelect">
+                        <option value="1h">1 Hour</option>
+                        <option value="1d" selected>1 Day</option>
+                        <option value="1wk">1 Week</option>
+                        <option value="1mo">1 Month</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>Custom Ticker</label>
+                    <input type="text" id="customTicker" placeholder="e.g., TATAMOTORS.NS">
+                </div>
+            </div>
+
+            <div class="control-row">
+                <div class="checkbox-group">
+                    <label><input type="checkbox" id="showMA" checked> Moving Averages</label>
+                    <label><input type="checkbox" id="showBollinger"> Bollinger Bands</label>
+                    <label><input type="checkbox" id="showRSI"> RSI</label>
+                    <label><input type="checkbox" id="showVolume" checked> Volume</label>
+                    <label><input type="checkbox" id="showINR" checked> Show in ₹</label>
+                </div>
+            </div>
+
+            <button class="update-btn" onclick="updateDashboard()">Update Dashboard</button>
+        </div>
+
+        <div id="metricsContainer"></div>
+        <div id="chartContainer"></div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8000';
+        let currentStockData = [];
+
+        // Check authentication
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            const username = localStorage.getItem('username');
+            
+            if (!token) {
+                window.location.href = 'login.html';
+                return false;
+            }
+            
+            document.getElementById('username').textContent = `Welcome, ${username}`;
+            return true;
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('username');
+            window.location.href = 'login.html';
+        }
+
+        async function fetchStockData(symbols, period, interval) {
+            const token = localStorage.getItem('token');
+            
+            const response = await fetch(`${API_URL}/api/stocks/multiple`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ symbols, period, interval })
+            });
+
+            if (response.status === 401) {
+                logout();
+                return null;
+            }
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch stock data');
+            }
+
+            return await response.json();
+        }
+
+        function calculateMA(data, period) {
+            const ma = [];
+            for (let i = 0; i < data.length; i++) {
+                if (i < period - 1) {
+                    ma.push(null);
+                } else {
+                    const sum = data.slice(i - period + 1, i + 1).reduce((a, b) => a + b, 0);
+                    ma.push(sum / period);
+                }
+            }
+            return ma;
+        }
+
+        function displayMetrics(stocksData) {
+            const container = document.getElementById('metricsContainer');
+            container.innerHTML = '<div class="metrics-grid"></div>';
+            const grid = container.querySelector('.metrics-grid');
+
+            // Filter out stocks with errors
+            const validStocks = stocksData.filter(stock => !stock.error);
+            
+            if (validStocks.length === 0) {
+                container.innerHTML = `
+                    <div class="error">
+                        <strong>No stock data available</strong><br>
+                        All selected stocks returned errors. This may be due to:<br>
+                        • Yahoo Finance API connectivity issues<br>
+                        • Invalid ticker symbols<br>
+                        • Market is closed and no recent data available<br><br>
+                        Try selecting different stocks or a longer time period (3mo, 6mo, or 1y).
+                    </div>
+                `;
+                return;
+            }
+
+            validStocks.forEach(stock => {
+                const info = stock.info;
+                const change = info.currentPrice - info.previousClose;
+                const changePercent = info.previousClose > 0 ? (change / info.previousClose) * 100 : 0;
+
+                const card = document.createElement('div');
+                card.className = 'metric-card';
+                card.innerHTML = `
+                    <div class="metric-header">${info.shortName}</div>
+                    <div class="metric-value">₹${info.currentPrice.toFixed(2)}</div>
+                    <div class="metric-change ${change >= 0 ? 'positive' : 'negative'}">
+                        ${change >= 0 ? '▲' : '▼'} ₹${Math.abs(change).toFixed(2)} (${changePercent.toFixed(2)}%)
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            
+            // Show errors for failed stocks
+            const failedStocks = stocksData.filter(stock => stock.error);
+            if (failedStocks.length > 0) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error';
+                errorDiv.style.marginTop = '20px';
+                errorDiv.innerHTML = `
+                    <strong>Failed to load:</strong><br>
+                    ${failedStocks.map(s => `• ${s.symbol}: ${s.error}`).join('<br>')}
+                `;
+                container.appendChild(errorDiv);
+            }
+        }
+
+        function displayCharts(stocksData) {
+            const container = document.getElementById('chartContainer');
+            container.innerHTML = '';
+
+            const showMA = document.getElementById('showMA').checked;
+            const showVolume = document.getElementById('showVolume').checked;
+
+            // Filter out stocks with errors
+            const validStocks = stocksData.filter(stock => !stock.error);
+
+            if (validStocks.length === 0) {
+                return; // Error already shown in metrics
+            }
+
+            validStocks.forEach((stock, index) => {
+                const chartDiv = document.createElement('div');
+                chartDiv.className = 'chart-container';
+                chartDiv.id = `chart-${index}`;
+                container.appendChild(chartDiv);
+
+                const dates = stock.data.map(d => new Date(d.Date || d.Datetime));
+                const closes = stock.data.map(d => d.Close);
+                const volumes = stock.data.map(d => d.Volume);
+
+                const traces = [
+                    {
+                        x: dates,
+                        y: closes,
+                        type: 'scatter',
+                        mode: 'lines',
+                        name: 'Close Price',
+                        line: { color: '#667eea', width: 2 }
+                    }
+                ];
+
+                if (showMA && closes.length >= 20) {
+                    const ma20 = calculateMA(closes, 20);
+                    const ma50 = calculateMA(closes, 50);
+                    
+                    traces.push({
+                        x: dates,
+                        y: ma20,
+                        type: 'scatter',
+                        mode: 'lines',
+                        name: 'MA 20',
+                        line: { color: '#f59e0b', width: 1 }
+                    });
+
+                    if (closes.length >= 50) {
+                        traces.push({
+                            x: dates,
+                            y: ma50,
+                            type: 'scatter',
+                            mode: 'lines',
+                            name: 'MA 50',
+                            line: { color: '#10b981', width: 1 }
+                        });
+                    }
+                }
+
+                const layout = {
+                    title: `${stock.info.shortName} (${stock.symbol})`,
+                    xaxis: { title: 'Date' },
+                    yaxis: { title: 'Price (₹)' },
+                    hovermode: 'x unified',
+                    showlegend: true,
+                    height: 400
+                };
+
+                Plotly.newPlot(chartDiv.id, traces, layout, { responsive: true });
+
+                if (showVolume) {
+                    const volumeDiv = document.createElement('div');
+                    volumeDiv.className = 'chart-container';
+                    volumeDiv.id = `volume-${index}`;
+                    container.appendChild(volumeDiv);
+
+                    const volumeTrace = {
+                        x: dates,
+                        y: volumes,
+                        type: 'bar',
+                        name: 'Volume',
+                        marker: { color: '#8b5cf6' }
+                    };
+
+                    const volumeLayout = {
+                        title: `${stock.info.shortName} - Volume`,
+                        xaxis: { title: 'Date' },
+                        yaxis: { title: 'Volume' },
+                        height: 300
+                    };
+
+                    Plotly.newPlot(volumeDiv.id, [volumeTrace], volumeLayout, { responsive: true });
+                }
+            });
+        }
+
+        async function updateDashboard() {
+            const stockSelect = document.getElementById('stockSelect');
+            const customTicker = document.getElementById('customTicker').value.trim().toUpperCase();
+            const period = document.getElementById('periodSelect').value;
+            const interval = document.getElementById('intervalSelect').value;
+
+            let selectedStocks = Array.from(stockSelect.selectedOptions).map(opt => opt.value);
+            
+            if (customTicker && !selectedStocks.includes(customTicker)) {
+                selectedStocks.push(customTicker);
+            }
+
+            selectedStocks = selectedStocks.slice(0, 3);
+
+            if (selectedStocks.length === 0) {
+                alert('Please select at least one stock');
+                return;
+            }
+
+            const container = document.getElementById('chartContainer');
+            container.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading stock data...</p>
+                </div>
+            `;
+
+            try {
+                const data = await fetchStockData(selectedStocks, period, interval);
+                
+                if (data && data.stocks) {
+                    currentStockData = data.stocks;
+                    displayMetrics(data.stocks);
+                    displayCharts(data.stocks);
+                }
+            } catch (error) {
+                container.innerHTML = `
+                    <div class="error">
+                        Error loading stock data: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // Initialize
+        if (checkAuth()) {
+            updateDashboard();
+        }
+    </script>
+</body>
+</html>
