@@ -2,4 +2,4 @@ fastapi
 uvicorn
 jinja2
 pymysql
-python-multipart
+
